@@ -1,0 +1,12 @@
+using UnityEngine;
+using System;
+
+public class DemoApp:MonoBehaviour {
+ enum Stage{Ready,Running,Fault,Isolated,Repaired,Complete}
+ Stage stage;Transform part;string status="Start conveyor, then follow the fault procedure.";float time;int mistakes;Camera cam;
+ void Start(){DemoWorld.Light();DemoWorld.Box("Floor",new Vector3(0,-.2f,0),new Vector3(20,.2f,20),Color.gray);DemoWorld.Box("Conveyor",new Vector3(0,.8f,0),new Vector3(8,.4f,1.5f),new Color(.1f,.25f,.35f));part=DemoWorld.Box("Part",new Vector3(-3,1.3f,0),Vector3.one*.6f,Color.yellow).transform;string[] names={"Start","Isolate","Repair","Reset"};for(int i=0;i<names.Length;i++)DemoWorld.Box(names[i],new Vector3(-3+i*2,1,-3),Vector3.one*.6f,Color.HSVToRGB(i*.2f,.7f,.9f));cam=DemoWorld.Camera(new Vector3(0,1.7f,-7));var rig=new GameObject("TrainingRig");cam.transform.SetParent(rig.transform,true);var n=rig.AddComponent<DemoNavigator>();n.view=cam;n.interact=g=>Act(g.name);}
+ void Act(string action){if(action=="Start"&&stage==Stage.Ready){stage=Stage.Running;status="Conveyor running. A fault will occur.";}else if(action=="Isolate"&&stage==Stage.Fault){stage=Stage.Isolated;status="Energy isolated in simulation. Repair sensor next.";}else if(action=="Repair"&&stage==Stage.Isolated){stage=Stage.Repaired;status="Sensor repaired. Reset to resume.";}else if(action=="Reset"&&stage==Stage.Repaired){stage=Stage.Complete;status="Training complete";var record=new Result{completed=true,duration=time,mistakes=mistakes};DemoWorld.Save("factory-result.json",JsonUtility.ToJson(record,true));}else{mistakes++;status="Wrong sequence: "+action;}}
+ [Serializable]public class Result{public bool completed;public float duration;public int mistakes;}
+ void Update(){if(stage!=Stage.Ready&&stage!=Stage.Complete)time+=Time.deltaTime;if(stage==Stage.Running){part.position+=Vector3.right*Time.deltaTime;if(part.position.x>=0){stage=Stage.Fault;status="Sensor fault! Isolate → Repair → Reset";}}}
+ void OnGUI(){GUILayout.BeginArea(new Rect(10,10,460,330),GUI.skin.box);GUILayout.Label("SMART FACTORY | procedure training MVP");GUILayout.Label("WASD move, RMB look, E activate focused console");GUILayout.Label($"State: {stage} | {time:F1}s | mistakes: {mistakes}");GUILayout.Label(status);foreach(string a in new[]{"Start","Isolate","Repair","Reset"})if(GUILayout.Button(a))Act(a);if(GUILayout.Button("New session")){stage=Stage.Ready;time=0;mistakes=0;part.position=new Vector3(-3,1.3f,0);status="Ready";}GUILayout.Label("Result JSON: "+Application.persistentDataPath);GUILayout.EndArea();}
+}
