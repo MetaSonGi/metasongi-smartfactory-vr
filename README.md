@@ -1,2 +1,20 @@
-# metasongi-smartfactory-vr
-Unity 3D smart factory VR training: equipment operation, process scenarios, virtual robot cells, faults, guided practice and scored assessments. Separate from the exhibition and drone simulator.
+# MetaSonGi Smart Factory VR
+
+3D 스마트팩토리 공간에서 설비 조작과 공정 절차를 연습하고 평가하는 독립 Unity VR 훈련 프로젝트입니다.
+
+## 현재 상태
+저장소와 요구사항·개발 계획을 초기화했습니다. 실행 가능한 앱·Unity 프로젝트·하드웨어 연동은 아직 구현하지 않았습니다.
+
+## MVP 개발 목록
+- [ ] 컨베이어·센서·로봇 셀을 포함한 3D 공장 공간
+- [ ] 설비 시작·정지·리셋과 공정 상태 표시
+- [ ] 부품 이송·검사·분류 등 단계별 훈련
+- [ ] 고장 시나리오와 오류 원인 안내
+- [ ] 가이드 모드·자유 연습·평가 모드
+- [ ] 완료·실수·소요 시간 기록과 추후 xAPI 연동
+
+## 개발 순서
+1단계: PC에서 컨베이어와 센서 공정 → 2단계: 단계별 훈련·평가 → 3단계: VR 입력과 상호작용 → 4단계: 학습 플랫폼 연결.
+
+## 설계와 프로젝트 경계
+학습 플랫폼·RAG·음성 로봇과는 명시적인 API 계약으로 추후 연결합니다. 초기 버전은 가상 설비만 제어합니다. VR 전시공간 및 드론 시뮬레이션과 독립적으로 실행하는 것을 목표로 합니다. 스마트팩토리 현장과 동일한 정확도나 공식 직무 인증을 보장하는 훈련 시스템으로 간주하지 않습니다.
